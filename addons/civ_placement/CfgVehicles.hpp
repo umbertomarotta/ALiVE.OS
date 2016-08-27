@@ -155,6 +155,12 @@ class CfgVehicles {
                                         };
                                 };
                         };
+                        class randomFilter
+                        {
+                                displayName = "$STR_ALIVE_CP_RANDOM_FILTER";
+                                description = "$STR_ALIVE_CP_RANDOM_FILTER_COMMENT";
+                                defaultValue = "80";
+                        };
                         class withPlacement
                         {
                                 displayName = "$STR_ALIVE_CP_PLACEMENT";

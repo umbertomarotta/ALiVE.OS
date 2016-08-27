@@ -43,6 +43,7 @@ ARJay
 #define DEFAULT_BLACKLIST []
 #define DEFAULT_SIZE_FILTER "160"
 #define DEFAULT_PRIORITY_FILTER "0"
+#define DEFAULT_RANDOM_FILTER "80"
 #define DEFAULT_TYPE QUOTE(RANDOM)
 #define DEFAULT_WITH_PLACEMENT true
 #define DEFAULT_FACTION QUOTE(OPF_F)
@@ -199,6 +200,10 @@ switch(_operation) do {
     case "priorityFilter": {
         _result = [_logic,_operation,_args,DEFAULT_PRIORITY_FILTER] call ALIVE_fnc_OOsimpleOperation;
     };
+    // Return the Random filter
+    case "randomFilter": {
+        _result = [_logic,_operation,_args,DEFAULT_RANDOM_FILTER] call ALIVE_fnc_OOsimpleOperation;
+    };
     // Return the Readiness Level
     case "readinessLevel": {
         _result = [_logic,_operation,_args,DEFAULT_READINESS_LEVEL] call ALIVE_fnc_OOsimpleOperation;
@@ -290,7 +295,7 @@ switch(_operation) do {
         if (isServer) then {
 
             private ["_debug","_clusterType","_placement","_worldName","_file","_clusters","_cluster","_taor","_taorClusters","_blacklist",
-            "_sizeFilter","_priorityFilter","_blacklistClusters","_center","_faction","_error"];
+            "_sizeFilter","_priorityFilter","_randomFilter","_blacklistClusters","_center","_faction","_error"];
 
             _debug = [_logic, "debug"] call MAINCLASS;
             _faction = [_logic, "faction"] call MAINCLASS;
@@ -351,6 +356,7 @@ switch(_operation) do {
                 _blacklist = [_logic, "blacklist"] call MAINCLASS;
                 _sizeFilter = parseNumber([_logic, "sizeFilter"] call MAINCLASS);
                 _priorityFilter = parseNumber([_logic, "priorityFilter"] call MAINCLASS);
+                _randomFilter = parseNumber([_logic, "randomFilter"] call MAINCLASS);
                 _placeSeaPatrols = [_logic, "placeSeaPatrols"] call MAINCLASS;
 
 
@@ -381,16 +387,22 @@ switch(_operation) do {
                     } forEach _blacklist;
                 };
 
-                private ["_clusters"];
+                private ["_clusters", "_randomValue", "_filterCount"];
 
                 _clusters = DEFAULT_OBJECTIVES;
+
+                _randomValue = 1;
 
                 switch(_clusterType) do {
                     case "All": {
                         _clusters = ALIVE_clustersCiv select 2;
-                        _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                         _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                         _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                        _filterCount = (count _clusters);
+                        if (_filterCount > 0) then {
+                            _randomValue = _randomFilter / _filterCount;
+                        };
+                        _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                         {
                             [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                         } forEach _clusters;
@@ -402,9 +414,13 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivHQ select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -417,9 +433,14 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivPower select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -432,9 +453,13 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivComms select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -448,9 +473,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivMarine") then {
                             _clusters = ALIVE_clustersCivMarine select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -463,9 +492,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivRail") then {
                             _clusters = ALIVE_clustersCivRail select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -478,9 +511,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivFuel") then {
                             _clusters = ALIVE_clustersCivFuel select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -493,9 +530,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivConstruction") then {
                             _clusters = ALIVE_clustersCivConstruction select 2;
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -504,15 +545,19 @@ switch(_operation) do {
                     };
                     case "Settlement": {
                         if !(isnil "ALIVE_clustersCivSettlement") then {
-                             _clusters = ALIVE_clustersCivSettlement select 2;
-                             _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
-                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
-                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                             {
-                                  [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
-                             } forEach _clusters;
-                             [_logic, "objectives", _clusters] call MAINCLASS;
-                          };
+                            _clusters = ALIVE_clustersCivSettlement select 2;
+                            _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
+                            _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+                            _filterCount = (count _clusters);
+                            if (_filterCount > 0) then {
+                                _randomValue = _randomFilter / _filterCount;
+                            };
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+                            {
+                                [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
+                            } forEach _clusters;
+                            [_logic, "objectives", _clusters] call MAINCLASS;
+                        };
                     };
                 };
 
@@ -524,15 +569,19 @@ switch(_operation) do {
 
                         //["ALIVE CP [%1] - Marine Clusters Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
-                        _marineClusters = [_marineClusters,0,_priorityFilter] call ALIVE_fnc_copyClusters;
-
-                        //["ALIVE CP [%1] - Marine Clusters Filtered Count: %2 - Size: %3 - Prio: %4",_faction, count _marineClusters, _sizeFilter, _priorityFilter] call ALIVE_fnc_dump;
-
                         _marineClusters = [_marineClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
 
                         //["ALIVE CP [%1] - Marine Clusters TAOR Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
                         _marineClusters = [_marineClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
+
+                        _filterCount = (count _marineClusters);
+                        if (_filterCount > 0) then {
+                            _randomValue = _randomFilter / _filterCount;
+                        };
+                        _marineClusters = [_marineClusters,0,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+
+                        //["ALIVE CP [%1] - Marine Clusters Filtered Count: %2 - Size: %3 - Prio: %4",_faction, count _marineClusters, _sizeFilter, _priorityFilter] call ALIVE_fnc_dump;
 
                         ["ALIVE CP [%1] - Marine Clusters Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
