@@ -50,6 +50,7 @@ ARJay
 #define DEFAULT_OBJECTIVES_VEHICLE []
 #define DEFAULT_SIZE_FILTER "0"
 #define DEFAULT_PRIORITY_FILTER "0"
+#define DEFAULT_RANDOM_FILTER "80"
 #define DEFAULT_AMBIENT_VEHICLE_AMOUNT "0.2"
 #define DEFAULT_HQ_BUILDING objNull
 #define DEFAULT_HQ_CLUSTER []
@@ -247,6 +248,10 @@ switch(_operation) do {
     case "priorityFilter": {
         _result = [_logic,_operation,_args,DEFAULT_PRIORITY_FILTER] call ALIVE_fnc_OOsimpleOperation;
     };
+    // Return the random filter
+    case "randomFilter": {
+        _result = [_logic,_operation,_args,DEFAULT_RANDOM_FILTER] call ALIVE_fnc_OOsimpleOperation;
+    };
     // Return the Readiness Level
     case "readinessLevel": {
         _result = [_logic,_operation,_args,DEFAULT_READINESS_LEVEL] call ALIVE_fnc_OOsimpleOperation;
@@ -339,7 +344,7 @@ switch(_operation) do {
         if (isServer) then {
 
             private ["_debug","_placement","_worldName","_file","_clusters","_cluster","_taor","_taorClusters","_blacklist",
-            "_sizeFilter","_priorityFilter","_blacklistClusters","_center","_error","_faction"];
+            "_sizeFilter","_priorityFilter", "_randomFilter", "_blacklistClusters","_center","_error","_faction"];
 
             _debug = [_logic, "debug"] call MAINCLASS;
             _faction = [_logic, "faction"] call MAINCLASS;
@@ -404,6 +409,7 @@ switch(_operation) do {
                 _blacklist = [_logic, "blacklist"] call MAINCLASS;
                 _sizeFilter = parseNumber([_logic, "sizeFilter"] call MAINCLASS);
                 _priorityFilter = parseNumber([_logic, "priorityFilter"] call MAINCLASS);
+                _randomFilter = parseNumber([_logic, "randomFilter"] call MAINCLASS);
                 _randomCampsMil = parseNumber([_logic, "randomCamps"] call MAINCLASS);
 
                 // check markers for existance
@@ -433,7 +439,7 @@ switch(_operation) do {
                     } forEach _blacklist;
                 };
 
-                private ["_HQClusters","_landClusters","_airClusters","_heliClusters","_vehicleClusters"];
+                private ["_HQClusters","_landClusters","_airClusters","_heliClusters","_vehicleClusters", "_randomValue"];
 
                 _clusters = ALIVE_clustersMil select 2;
 
@@ -441,6 +447,8 @@ switch(_operation) do {
                 _airClusters = DEFAULT_OBJECTIVES_AIR;
                 _heliClusters = DEFAULT_OBJECTIVES_HELI;
                 _landClusters = DEFAULT_OBJECTIVES_LAND;
+
+                _randomValue = 1;
 
                 if (_randomCampsMil > 0) then {
                      if (isnil "ALIVE_clustersMilLand") then {
@@ -494,27 +502,14 @@ switch(_operation) do {
                     _landClusters = [_landClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                 };
 
-                _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                 // cull clusters outside of TAOR marker if defined
                 _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                 // cull clusters inside of Blacklist marker if defined
                 _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                ///*
-                // switch on debug for all clusters if debug on
-                {
-                    [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
-                } forEach (_clusters + _landClusters);
-                //*/
-
-                // store the clusters on the logic
-                [_logic, "objectives", _clusters + _landclusters] call MAINCLASS;
-
-
 
                 //Move on to special objectives
                 if !(isnil "ALIVE_clustersMilHQ") then {
                     _HQClusters = ALIVE_clustersMilHQ select 2;
-                    _HQClusters = [_HQClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _HQClusters = [_HQClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _HQClusters = [_HQClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -526,7 +521,6 @@ switch(_operation) do {
 
                 if !(isnil "ALIVE_clustersMilAir") then {
                     _airClusters = ALIVE_clustersMilAir select 2;
-                    _airClusters = [_airClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _airClusters = [_airClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _airClusters = [_airClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -538,7 +532,6 @@ switch(_operation) do {
 
                 if !(isnil "ALIVE_clustersMilHeli") then {
                     _heliClusters = ALIVE_clustersMilHeli select 2;
-                    _heliClusters = [_heliClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _heliClusters = [_heliClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _heliClusters = [_heliClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -548,6 +541,31 @@ switch(_operation) do {
                     */
                 };
 
+                _filterCount = (count (_clusters + _HQClusters + _airClusters + _heliClusters));
+                if (_filterCount > 0) then {
+                    _randomValue = _randomFilter / _filterCount;
+                };
+
+                _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+                if !(isnil "ALIVE_clustersMilHQ") then {
+                    _HQClusters = [_HQClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+                };
+                if !(isnil "ALIVE_clustersMilAir") then {
+                    _airClusters = [_airClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+                };
+                if !(isnil "ALIVE_clustersMilHeli") then {
+                    _heliClusters = [_heliClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
+                };
+
+                ///*
+                // switch on debug for all clusters if debug on
+                {
+                    [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
+                } forEach (_clusters + _landClusters);
+                //*/
+
+                // store the clusters on the logic
+                [_logic, "objectives", _clusters + _landclusters] call MAINCLASS;
                 [_logic, "objectivesLand", _landClusters] call MAINCLASS;
                 [_logic, "objectivesHQ", _HQClusters] call MAINCLASS;
                 [_logic, "objectivesAir", _airClusters] call MAINCLASS;

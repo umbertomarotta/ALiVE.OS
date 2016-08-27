@@ -68,6 +68,12 @@
 <Key ID="STR_ALIVE_MP_PRIORITY_FILTER_HIGH">
     <Original>Only high priority objectives</Original>
 </Key>
+<Key ID="STR_ALIVE_MP_RANDOM_FILTER">
+    <Original>Objective Random Filter:</Original>
+</Key>
+<Key ID="STR_ALIVE_MP_RANDOM_FILTER_COMMENT">
+    <Original>Average number of randomly selected objectives</Original>
+</Key>
 <Key ID="STR_ALIVE_MP_READINESS_LEVEL">
     <Original>Readiness:</Original>
 </Key>
