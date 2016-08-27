@@ -34,7 +34,7 @@ params [
     ["_clusters", [], [[]]],
     ["_sizeFilter", 0, [0]],
     ["_priorityFilter", 0, [0]],
-    ["_randomFilter", 0, [0]]
+    ["_randomFilter", 1, [0]]
 ];
 
 _clustersCopy = [];
