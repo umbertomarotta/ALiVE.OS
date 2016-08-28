@@ -398,7 +398,7 @@ switch(_operation) do {
                         _clusters = ALIVE_clustersCiv select 2;
                         _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                         _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                        _filterCount = (count _clusters);
+                        _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                         if (_filterCount > 0) then {
                             _randomValue = _randomFilter / _filterCount;
                         };
@@ -416,7 +416,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivHQ select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -435,7 +435,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivPower select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -455,7 +455,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivComms select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -475,7 +475,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivMarine select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -494,7 +494,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivRail select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -513,7 +513,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivFuel select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -532,7 +532,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivConstruction select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -548,7 +548,7 @@ switch(_operation) do {
                             _clusters = ALIVE_clustersCivSettlement select 2;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = (count _clusters);
+                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
                             if (_filterCount > 0) then {
                                 _randomValue = _randomFilter / _filterCount;
                             };
@@ -575,7 +575,7 @@ switch(_operation) do {
 
                         _marineClusters = [_marineClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
 
-                        _filterCount = (count _marineClusters);
+                        _filterCount = ( { (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) } count _marineClusters );
                         if (_filterCount > 0) then {
                             _randomValue = _randomFilter / _filterCount;
                         };
