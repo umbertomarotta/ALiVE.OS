@@ -541,7 +541,7 @@ switch(_operation) do {
                     */
                 };
 
-                _filterCount = (count (_clusters + _HQClusters + _airClusters + _heliClusters));
+                _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count (_clusters + _HQClusters + _airClusters + _heliClusters));
                 if (_filterCount > 0) then {
                     _randomValue = _randomFilter / _filterCount;
                 };
