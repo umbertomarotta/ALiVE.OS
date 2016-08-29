@@ -439,7 +439,9 @@ switch(_operation) do {
                     } forEach _blacklist;
                 };
 
-                private ["_HQClusters","_landClusters","_airClusters","_heliClusters","_vehicleClusters", "_randomValue"];
+                private ["_HQClusters","_landClusters","_airClusters","_heliClusters","_vehicleClusters", "_countclusters",
+                "_countlandClusters", "_countHQClusters", "_countAirClusters", "_countHeliClusters","_numclusters",
+                "_numlandClusters", "_numHQClusters", "_numAirClusters", "_numHeliClusters", "_checkExit"];
 
                 _clusters = ALIVE_clustersMil select 2;
 
@@ -447,8 +449,6 @@ switch(_operation) do {
                 _airClusters = DEFAULT_OBJECTIVES_AIR;
                 _heliClusters = DEFAULT_OBJECTIVES_HELI;
                 _landClusters = DEFAULT_OBJECTIVES_LAND;
-
-                _randomValue = 1;
 
                 if (_randomCampsMil > 0) then {
                      if (isnil "ALIVE_clustersMilLand") then {
@@ -502,14 +502,28 @@ switch(_operation) do {
                     _landClusters = [_landClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                 };
 
+                _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                 // cull clusters outside of TAOR marker if defined
                 _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                 // cull clusters inside of Blacklist marker if defined
                 _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
 
+                /*
+                if(_randomFilter > 0) then {
+                    _clusters = _clusters call BIS_fnc_arrayShuffle;
+                    _clusters = (_clusters select [0, _randomFilter]);
+                };
+
+                // switch on debug for all clusters if debug on
+                {
+                    [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
+                } forEach (_clusters + _landClusters);
+                */
+
                 //Move on to special objectives
                 if !(isnil "ALIVE_clustersMilHQ") then {
                     _HQClusters = ALIVE_clustersMilHQ select 2;
+                    _HQClusters = [_HQClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _HQClusters = [_HQClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _HQClusters = [_HQClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -521,6 +535,7 @@ switch(_operation) do {
 
                 if !(isnil "ALIVE_clustersMilAir") then {
                     _airClusters = ALIVE_clustersMilAir select 2;
+                    _airClusters = [_airClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _airClusters = [_airClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _airClusters = [_airClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -532,6 +547,7 @@ switch(_operation) do {
 
                 if !(isnil "ALIVE_clustersMilHeli") then {
                     _heliClusters = ALIVE_clustersMilHeli select 2;
+                    _heliClusters = [_heliClusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                     _heliClusters = [_heliClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                     _heliClusters = [_heliClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
                     /*
@@ -541,27 +557,82 @@ switch(_operation) do {
                     */
                 };
 
-                _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count (_clusters + _HQClusters + _airClusters + _heliClusters));
-                if (_filterCount > 0) then {
-                    _randomValue = _randomFilter / _filterCount;
-                };
-
-                _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-                if !(isnil "ALIVE_clustersMilHQ") then {
-                    _HQClusters = [_HQClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-                };
-                if !(isnil "ALIVE_clustersMilAir") then {
-                    _airClusters = [_airClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-                };
-                if !(isnil "ALIVE_clustersMilHeli") then {
-                    _heliClusters = [_heliClusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-                };
+                _countclusters = (count _clusters);
+                _countlandClusters = (count _landClusters);
+                _countHQClusters = (count _HQClusters);
+                _countAirClusters = (count _airClusters);
+                _countHeliClusters = (count _heliClusters);
 
                 ///*
+                if(_randomFilter > 0) then {
+
+                    _clusters = _clusters call BIS_fnc_arrayShuffle;
+                    _landClusters = _landClusters call BIS_fnc_arrayShuffle;
+                    //_HQClusters = _airClusters call BIS_fnc_arrayShuffle;
+                    //_airClusters = _airClusters call BIS_fnc_arrayShuffle;
+                    //_heliClusters = _heliClusters call BIS_fnc_arrayShuffle;
+
+                    _numclusters = 0;
+                    _numlandClusters = 0;
+                    //_numHQClusters = 0;
+                    //_numAirClusters = 0;
+                    //_numHeliClusters = 0;
+
+                    while {_randomFilter > 0} do {
+                        _checkExit = true;
+                        if(_randomFilter > 0 && _countclusters > 0) then {
+                            _countclusters = _countclusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numclusters = _numclusters + 1;
+                            _checkExit = false;
+                        };
+                        if(_randomFilter > 0 && _countlandClusters > 0) then {
+                            _countlandClusters = _countlandClusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numlandClusters = _numlandClusters + 1;
+                            _checkExit = false;
+                        };
+                        /*
+                        if(_randomFilter > 0 && _countHQClusters > 0) then {
+                            _countHQClusters = _countHQClusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numHQClusters = _numHQClusters + 1;
+                            _checkExit = false;
+                        };
+                        if(_randomFilter > 0 && _countAirClusters > 0) then {
+                            _countAirClusters = _countAirClusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numAirClusters = _numAirClusters + 1;
+                            _checkExit = false;
+                        };
+                        if(_randomFilter > 0 && _countHeliClusters > 0) then {
+                            _countHeliClusters = _countHeliClusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numHeliClusters = _numHeliClusters + 1;
+                            _checkExit = false;
+                        };
+                        */
+                        if (_checkExit) exitWith {};
+                    };
+
+                    _clusters = (_clusters select [0, _numclusters]);
+                    _landClusters = (_clusters select [0, _numlandClusters]);
+                    //_HQClusters = (_clusters select [0, _numHQClusters]);
+                    //_airClusters = (_clusters select [0, _numAirClusters]);
+                    //_heliClusters = (_clusters select [0, _numHeliClusters]);
+
+                    _countclusters = _numclusters;
+                    _countlandClusters = _numlandClusters;
+                    //_countHQClusters = _numHQClusters;
+                    //_countAirClusters = _numAirClusters;
+                    //_countHeliClusters = _numHeliClusters;
+                };
+
                 // switch on debug for all clusters if debug on
                 {
                     [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                 } forEach (_clusters + _landClusters);
+
                 //*/
 
                 // store the clusters on the logic
@@ -574,17 +645,17 @@ switch(_operation) do {
                 // DEBUG -------------------------------------------------------------------------------------
                 if(_debug) then {
                     ["ALIVE MP - Startup completed"] call ALIVE_fnc_dump;
-                    ["ALIVE MP - Count clusters %1",count _clusters] call ALIVE_fnc_dump;
-                    ["ALIVE MP - Count land clusters %1",count _landClusters] call ALIVE_fnc_dump;
-                    ["ALIVE MP - Count air clusters %1",count _airClusters] call ALIVE_fnc_dump;
-                    ["ALIVE MP - Count heli clusters %1",count _heliClusters] call ALIVE_fnc_dump;
+                    ["ALIVE MP - Count clusters %1",_countclusters] call ALIVE_fnc_dump;
+                    ["ALIVE MP - Count land clusters %1",_countlandClusters] call ALIVE_fnc_dump;
+                    ["ALIVE MP - Count air clusters %1",_countAirClusters] call ALIVE_fnc_dump;
+                    ["ALIVE MP - Count heli clusters %1",_countHeliClusters] call ALIVE_fnc_dump;
                     [] call ALIVE_fnc_timer;
                 };
                 // DEBUG -------------------------------------------------------------------------------------
 
                 if(_placement) then {
 
-                    if(count _clusters > 0) then {
+                    if(_countclusters > 0) then {
                         // start placement
                         [_logic, "placement"] call MAINCLASS;
                     }else{
