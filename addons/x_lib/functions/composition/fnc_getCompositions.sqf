@@ -54,15 +54,15 @@ if (!isNil "ALiVE_mapCompositionType") then {
 
 _result = [];
 
-if (count _cat == 0 || (_cat select 0) == "") then {
+if (count _cat == 0 || {(_cat select 0) == ""}) then {
     _cat = ["any"];
 };
 
-if (count _size == 0 || (_size select 0) == "") then {
+if (count _size == 0 || {(_size select 0) == ""}) then {
     _size = ["any"];
 };
 
-if (count _faction == 0 || (_faction select 0) == "") then {
+if (count _faction == 0 || {(_faction select 0) == ""}) then {
     _faction = ["any"];
 };
 
@@ -154,7 +154,7 @@ scopeName "main";
     };
 } foreach _configPaths;
 
-if (count _result == 0) then {
+if ( (count _result == 0) && (not (("any" in _size) && ("any" in _faction))) ) then {
     private ["_temp"];
     if (!isNil "ALiVE_mapCompositionType") then {
         // If we can't find any compositions for the current environment i.e. desert/woodland then check urban
