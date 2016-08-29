@@ -387,22 +387,20 @@ switch(_operation) do {
                     } forEach _blacklist;
                 };
 
-                private ["_clusters", "_randomValue", "_filterCount"];
+                private ["_clusters", "_countclusters"];
 
                 _clusters = DEFAULT_OBJECTIVES;
-
-                _randomValue = 1;
 
                 switch(_clusterType) do {
                     case "All": {
                         _clusters = ALIVE_clustersCiv select 2;
+                        _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                         _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                         _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                        _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                        if (_filterCount > 0) then {
-                            _randomValue = _randomFilter / _filterCount;
+                        if(_randomFilter > 0) then {
+                            _clusters = _clusters call BIS_fnc_arrayShuffle;
+                            _clusters = (_clusters select [0, _randomFilter]);
                         };
-                        _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                         {
                             [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                         } forEach _clusters;
@@ -414,13 +412,13 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivHQ select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -433,14 +431,13 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivPower select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -453,13 +450,13 @@ switch(_operation) do {
                                 _sizeFilter = 0;
                             };
                             _clusters = ALIVE_clustersCivComms select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -473,13 +470,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivMarine") then {
                             _clusters = ALIVE_clustersCivMarine select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -492,13 +489,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivRail") then {
                             _clusters = ALIVE_clustersCivRail select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -511,13 +508,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivFuel") then {
                             _clusters = ALIVE_clustersCivFuel select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -530,13 +527,13 @@ switch(_operation) do {
                         };
                         if !(isnil "ALIVE_clustersCivConstruction") then {
                             _clusters = ALIVE_clustersCivConstruction select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -546,13 +543,13 @@ switch(_operation) do {
                     case "Settlement": {
                         if !(isnil "ALIVE_clustersCivSettlement") then {
                             _clusters = ALIVE_clustersCivSettlement select 2;
+                            _clusters = [_clusters,_sizeFilter,_priorityFilter] call ALIVE_fnc_copyClusters;
                             _clusters = [_clusters, _taor] call ALIVE_fnc_clustersInsideMarker;
                             _clusters = [_clusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-                            _filterCount = ({ (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) && (([_x,"size"] call ALIVE_fnc_hashGet) >= _sizeFilter) } count _clusters);
-                            if (_filterCount > 0) then {
-                                _randomValue = _randomFilter / _filterCount;
+                            if(_randomFilter > 0) then {
+                                _clusters = _clusters call BIS_fnc_arrayShuffle;
+                                _clusters = (_clusters select [0, _randomFilter]);
                             };
-                            _clusters = [_clusters,_sizeFilter,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
                             {
                                 [_x, "debug", [_logic, "debug"] call MAINCLASS] call ALIVE_fnc_cluster;
                             } forEach _clusters;
@@ -569,19 +566,15 @@ switch(_operation) do {
 
                         //["ALIVE CP [%1] - Marine Clusters Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
+                        _marineClusters = [_marineClusters,0,_priorityFilter] call ALIVE_fnc_copyClusters;
+
+                        //["ALIVE CP [%1] - Marine Clusters Filtered Count: %2 - Size: %3 - Prio: %4",_faction, count _marineClusters, _sizeFilter, _priorityFilter] call ALIVE_fnc_dump;
+
                         _marineClusters = [_marineClusters, _taor] call ALIVE_fnc_clustersInsideMarker;
 
                         //["ALIVE CP [%1] - Marine Clusters TAOR Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
                         _marineClusters = [_marineClusters, _blacklist] call ALIVE_fnc_clustersOutsideMarker;
-
-                        _filterCount = ( { (([_x,"priority"] call ALIVE_fnc_hashGet) >= _priorityFilter) } count _marineClusters );
-                        if (_filterCount > 0) then {
-                            _randomValue = _randomFilter / _filterCount;
-                        };
-                        _marineClusters = [_marineClusters,0,_priorityFilter,_randomValue] call ALIVE_fnc_copyClusters;
-
-                        //["ALIVE CP [%1] - Marine Clusters Filtered Count: %2 - Size: %3 - Prio: %4",_faction, count _marineClusters, _sizeFilter, _priorityFilter] call ALIVE_fnc_dump;
 
                         ["ALIVE CP [%1] - Marine Clusters Count: %2",_faction, count _marineClusters] call ALIVE_fnc_dump;
 
@@ -594,12 +587,35 @@ switch(_operation) do {
                     };
                 };
 
+                /*
+                _countclusters = (count _clusters);
+                if(_randomFilter > 0) then {
 
+                    _clusters = _clusters call BIS_fnc_arrayShuffle;
+
+                    _numclusters = 0;
+
+                    while {_randomFilter > 0} do {
+                        _checkExit = true;
+                        if(_randomFilter > 0 && _countclusters > 0) then {
+                            _countclusters = _countclusters - 1;
+                            _randomFilter = _randomFilter - 1;
+                            _numclusters = _numclusters + 1;
+                            _checkExit = false;
+                        if (_checkExit) exitWith {};
+                    };
+
+                    _clusters = (_clusters select [0, _numclusters]);
+                    _countclusters = _numclusters;
+                };
+                */
+
+                _countclusters = (count _clusters);
 
                 // DEBUG -------------------------------------------------------------------------------------
                 if(_debug) then {
                     ["ALIVE CP - Startup completed"] call ALIVE_fnc_dump;
-                    ["ALIVE CP - Count clusters %1",count _clusters] call ALIVE_fnc_dump;
+                    ["ALIVE CP - Count clusters %1",_countclusters] call ALIVE_fnc_dump;
                     [] call ALIVE_fnc_timer;
                 };
                 // DEBUG -------------------------------------------------------------------------------------
@@ -608,7 +624,7 @@ switch(_operation) do {
 
                     if!(ALIVE_loadProfilesPersistent) then {
 
-                        if(count _clusters > 0) then {
+                        if(_countclusters > 0) then {
                             // start placement
                             [_logic, "placement"] call MAINCLASS;
                         }else{
