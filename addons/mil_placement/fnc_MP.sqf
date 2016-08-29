@@ -875,16 +875,16 @@ switch(_operation) do {
                     If (_faction call ALiVE_fnc_factionSide == RESISTANCE) then {
                         _compType = "Guerrilla";
                     };
-                    _HQ = selectRandom ([_compType, ["FieldHQ"], ["Medium"], _faction] call ALiVE_fnc_getCompositions);
+                    _HQ = ([_compType, ["FieldHQ"], ["Medium"], _faction] call ALiVE_fnc_getCompositions);
 
-                    if (isNil "_HQ") then {
-                        _HQ = selectRandom ([_compType, ["HQ","FieldHQ"], ["Medium","Small"], _faction] call ALiVE_fnc_getCompositions);
+                    if (count _HQ <= 0) then {
+                        _HQ = ([_compType, ["HQ","FieldHQ"], ["Medium","Small"], _faction] call ALiVE_fnc_getCompositions);
                     };
 
                     _nearRoads = _flatpos nearRoads 1000;
                     _direction = if (count _nearRoads > 0) then {direction (_nearRoads select 0)} else {random 360};
 
-                    [_HQ, _flatPos, _direction] call ALiVE_fnc_spawnComposition;
+                    [(selectRandom _HQ), _flatPos, _direction] call ALiVE_fnc_spawnComposition;
                     [_logic, "FieldHQBuilding", nearestObject [_flatPos, "building"]] call MAINCLASS;
 
                     _group = ["Infantry",_faction] call ALIVE_fnc_configGetRandomGroup;
@@ -919,14 +919,14 @@ switch(_operation) do {
                         _compType = "Guerrilla";
                     };
 
-                    _composition = selectRandom ([_compType, ["Camps","Outposts"], ["Medium"], _faction] call ALiVE_fnc_getCompositions);
+                    _composition = ([_compType, ["Camps","Outposts"], ["Medium"], _faction] call ALiVE_fnc_getCompositions);
 
-                    if (isNil "_composition") then {
+                    if (count _composition <= 0) then {
                         _composition = selectRandom ([_compType, ["Camps","Outposts"], ["Medium","Small"], _faction] call ALiVE_fnc_getCompositions);
                     };
 
                     if(count _composition > 0) then {
-                        [_composition, _pos, random 360] call ALIVE_fnc_spawnComposition;
+                        [(selectRandom _composition), _pos, random 360] call ALIVE_fnc_spawnComposition;
                     };
 
                     [_x,"nodes",nearestObjects [_pos,["static"],50]] call ALIVE_fnc_hashSet;
