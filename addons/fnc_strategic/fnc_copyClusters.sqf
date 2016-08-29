@@ -33,8 +33,7 @@ private ["_clustersCopy","_priority","_size","_nodes","_newNodes","_cluster"];
 params [
     ["_clusters", [], [[]]],
     ["_sizeFilter", 0, [0]],
-    ["_priorityFilter", 0, [0]],
-    ["_randomFilter", 0, [0]]
+    ["_priorityFilter", 0, [0]]
 ];
 
 _clustersCopy = [];
@@ -43,7 +42,7 @@ _clustersCopy = [];
     _priority = [_x,"priority"] call ALIVE_fnc_hashGet;
     _size = [_x,"size"] call ALIVE_fnc_hashGet;
 
-    if((_size >= _sizeFilter) && (_priority >= _priorityFilter) && ((random 1) <= _randomFilter)) then {
+    if((_size >= _sizeFilter) && (_priority >= _priorityFilter)) then {
         _cluster = [nil, "create"] call ALIVE_fnc_cluster;
 
         _nodes = [_x,"nodes"] call ALIVE_fnc_hashGet;
