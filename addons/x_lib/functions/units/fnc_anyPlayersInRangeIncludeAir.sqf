@@ -29,12 +29,20 @@ ARJay
 
 Peer Reviewed:
 ---------------------------------------------------------------------------- */
-private ["_position","_spawnDistance","_jetSpawnDistance","_helicopterSpawnDistance","_players","_player","_position","_anyInRange"];
+private ["_position","_spawnDistance","_jetSpawnDistance","_helicopterSpawnDistance","_players","_player","_position","_anyInRange", "_notInfantry"];
 
 PARAMS_1(_position);
 DEFAULT_PARAM(1,_spawnDistance,1500);
 DEFAULT_PARAM(2,_jetSpawnDistance,0);
 DEFAULT_PARAM(3,_helicopterSpawnDistance,1500);
+DEFAULT_PARAM(4,_profile,[]);
+
+_notInfantry = false;
+if (count _profile != 0) then {
+	if ((_profile select 2 select 6) in ["Car", "Tank", "Armored", "Truck", "Ship", "Helicopter", "Plane", "StaticWeapon"]) then {
+		_notInfantry = true;
+	};
+};
 
 _players = allPlayers + allCurators;
 
@@ -45,7 +53,7 @@ scopeName "main";
 {
     if(
         (!(vehicle _x isKindOf "Plane") && {!(vehicle _x isKindOf "Helicopter")} && {(_x distance _position < _spawnDistance)}) ||
-        {(vehicle _x isKindOf "Plane") && {(_x distance _position < _jetSpawnDistance)}} ||
+        {(vehicle _x isKindOf "Plane") && {(_x distance _position < _jetSpawnDistance) && _notInfantry}} ||
         {(vehicle _x isKindOf "Helicopter") && {(_x distance _position < _helicopterSpawnDistance)}}
     ) then {
         _anyInRange = true;

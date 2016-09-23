@@ -220,7 +220,7 @@ class FSM
        "            if!(_active) then {" \n
        "                _position = _profile select 2 select 2;" \n
        "" \n
-       "                if ([_position, _spawnDistance, _spawnTypeJetRadius, _spawnTypeHeliRadius] call ALiVE_fnc_anyPlayersInRangeIncludeAir) then {" \n
+       "                if ([_position, _spawnDistance, _spawnTypeJetRadius, _spawnTypeHeliRadius, _profile] call ALiVE_fnc_anyPlayersInRangeIncludeAir) then {" \n
        "                    _toSpawn pushback _profile;" \n
        "                }else{" \n
        "                    if ([_position, _spawnDistance] call ALiVE_fnc_anyAutonomousInRange > 0) then {" \n
@@ -419,7 +419,7 @@ class FSM
            "{" \n
            "    isnil ""_profile"" ||" \n
            "    {[_profile,""active"",false] call ALiVE_fnc_HashGet} || " \n
-           "    {!([_position, _spawnDistance, _spawnTypeJetRadius, _spawnTypeHeliRadius] call ALiVE_fnc_anyPlayersInRangeIncludeAir)} || " \n
+           "    {!([_position, _spawnDistance, _spawnTypeJetRadius, _spawnTypeHeliRadius, _profile] call ALiVE_fnc_anyPlayersInRangeIncludeAir)} || " \n
            "    {_timeoutFull}" \n
            "};"/*%FSM</CONDITION""">*/;
           action=/*%FSM<ACTION""">*/"// DEBUG -------------------------------------------------------------------------------------" \n
@@ -480,7 +480,7 @@ class FSM
        "                };                " \n
        "            };" \n
        "" \n
-       "            if !([_position, _despawnDistance, _despawnTypeJetRadius, _despawnTypeHeliRadius] call ALiVE_fnc_anyPlayersInRangeIncludeAir) then {" \n
+       "            if !([_position, _despawnDistance, _despawnTypeJetRadius, _despawnTypeHeliRadius, _profile] call ALiVE_fnc_anyPlayersInRangeIncludeAir) then {" \n
        "                if ([_position, _despawnDistance] call ALiVE_fnc_anyAutonomousInRange == 0) then {" \n
        "                    if([_profile, _despawnDistance] call ALIVE_fnc_profileGetAnyLinkedInRange == 0) then {" \n
        "                               _toDespawn pushback _profile;" \n
